@@ -1,0 +1,38 @@
+---
+version: '3'
+services:
+  web:
+    image: icinga/icingaweb2
+    ports:
+      - 8484:8080
+    environment:
+      icingaweb.enabledModules: fourcolors
+      icingaweb.passwords.icingaweb2.icingaadmin: icinga
+      icingaweb.authentication.icingaweb2.backend: db
+      icingaweb.authentication.icingaweb2.resource: icingaweb_db
+      icingaweb.config.global.config_backend: db
+      icingaweb.config.global.config_resource: icingaweb_db
+      icingaweb.config.logging.log: php
+      icingaweb.groups.icingaweb2.backend: db
+      icingaweb.groups.icingaweb2.resource: icingaweb_db
+      icingaweb.resources.icingaweb_db.type: db
+      icingaweb.resources.icingaweb_db.db: mysql
+      icingaweb.resources.icingaweb_db.host: db
+      icingaweb.resources.icingaweb_db.dbname: web
+      icingaweb.resources.icingaweb_db.username: web
+      icingaweb.resources.icingaweb_db.password: web
+      icingaweb.resources.icingaweb_db.charset: utf8mb4
+      icingaweb.roles.Administrators.users: icingaadmin
+      icingaweb.roles.Administrators.permissions: '*'
+    volumes:
+      - ./dev-env.d/web:/data
+      - ./:/usr/share/icingaweb2/modules/fourcolors:ro
+  db:
+    image: mariadb
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+      MYSQL_DATABASE: web
+      MYSQL_USER: web
+      MYSQL_PASSWORD: web
+    volumes:
+      - ./dev-env.d/db:/var/lib/mysql
