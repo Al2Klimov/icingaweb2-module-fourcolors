@@ -15,6 +15,7 @@ services:
       icingaweb.config.logging.log: php
       icingaweb.groups.icingaweb2.backend: db
       icingaweb.groups.icingaweb2.resource: icingaweb_db
+      icingaweb.modules.fourcolors.config.redis.host: redis
       icingaweb.resources.icingaweb_db.type: db
       icingaweb.resources.icingaweb_db.db: mysql
       icingaweb.resources.icingaweb_db.host: db
@@ -36,3 +37,7 @@ services:
       MYSQL_PASSWORD: web
     volumes:
       - ./dev-env.d/db:/var/lib/mysql
+  redis:
+    image: redis
+    volumes:
+      - ./dev-env.d/redis:/data
