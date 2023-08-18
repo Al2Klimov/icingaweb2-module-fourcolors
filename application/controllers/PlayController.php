@@ -20,6 +20,12 @@ class PlayController extends CompatController
             throw new SecurityException($this->translate('Game not started yet: %s'), $game);
         }
 
+        $user = $this->Auth()->getUser()->getUsername();
+
+        if (! array_key_exists($user, $state->players)) {
+            throw new SecurityException($this->translate('You haven\'t joined game: %s'), $game);
+        }
+
         $this->addContent(Html::tag('p'));
     }
 }
