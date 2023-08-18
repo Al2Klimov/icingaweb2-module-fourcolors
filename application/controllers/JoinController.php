@@ -20,22 +20,11 @@ class JoinController extends CompatController
         $this->addContent(
             (new ConfirmForm($this->translate('Join game')))
                 ->on(ConfirmForm::ON_SUCCESS, function () use ($game): void {
-                    $key = static::$redisPrefix . "game:$game";
-
-                    for ($redis = $this->getRedis();;) {
-                        $redis->watch($key);
-
-                        $state = $this->loadGame($redis, $game);
+                    $this->updateGame($this->getRedis(), $game, function (Game $state): void {
                         $state->players[$this->Auth()->getUser()->getUsername()] = null;
+                    });
 
-                        $redis->multi();
-                        $redis->set($key, serialize($state));
-                        $redis->expire($key, Game::EXPIRE);
-
-                        if ($redis->exec() !== null) {
-                            $this->redirectNow(Url::fromPath('fourcolors/lobby')->setParam('game', $game));
-                        }
-                    }
+                    $this->redirectNow(Url::fromPath('fourcolors/lobby')->setParam('game', $game));
                 })
                 ->handleRequest(ServerRequest::fromGlobals())
         );

@@ -2,6 +2,9 @@
 
 namespace Icinga\Module\Fourcolors\Controllers;
 
+use GuzzleHttp\Psr7\ServerRequest;
+use Icinga\Module\Fourcolors\Form\ConfirmForm;
+use Icinga\Module\Fourcolors\Game;
 use Icinga\Module\Fourcolors\RedisAwareController;
 use ipl\Html\Html;
 use ipl\Html\ValidHtml;
@@ -17,12 +20,34 @@ class LobbyController extends CompatController
     public function indexAction(): void
     {
         $game = $this->params->getRequired('game');
-        $state = $this->loadGame($this->getRedis(), $game);
+        $redis = $this->getRedis();
+        $state = $this->loadGame($redis, $game);
+
+        if ($state->started) {
+            $this->redirectNow(Url::fromPath('fourcolors/play')->setParam('game', $game));
+        }
+
         $join = Url::fromPath('fourcolors/join')->setParam('game', $game);
 
         $this->addContent(Html::tag('h2', $this->translate('Invite others')));
         $this->addContent(Html::tag('p', $this->translate('Right-click the link and select copy link location.')));
         $this->addContent(Html::tag('p', Html::tag('a', ['href' => $join], $join->getAbsoluteUrl())));
+
+        if (count($state->players) > 1) {
+            if (array_key_first($state->players) === $this->Auth()->getUser()->getUsername()) {
+                $this->addContent(
+                    (new ConfirmForm($this->translate('Start game')))
+                        ->on(ConfirmForm::ON_SUCCESS, function () use ($redis, $game): void {
+                            $this->updateGame($redis, $game, function (Game $state): void {
+                                $state->started = true;
+                            });
+
+                            $this->redirectNow(Url::fromPath('fourcolors/play')->setParam('game', $game));
+                        })
+                        ->handleRequest(ServerRequest::fromGlobals())
+                );
+            }
+        }
 
         $this->addContent(Html::tag('h2', $this->translate('Players')));
 
