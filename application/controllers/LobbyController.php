@@ -3,6 +3,7 @@
 namespace Icinga\Module\Fourcolors\Controllers;
 
 use GuzzleHttp\Psr7\ServerRequest;
+use Icinga\Module\Fourcolors\Card;
 use Icinga\Module\Fourcolors\Form\ConfirmForm;
 use Icinga\Module\Fourcolors\Game;
 use Icinga\Module\Fourcolors\RedisAwareController;
@@ -45,6 +46,12 @@ class LobbyController extends CompatController
                                 }
 
                                 $state->started = true;
+
+                                foreach ($state->players as &$cards) {
+                                    for ($i = 0; $i < 7; ++$i) {
+                                        $cards[] = Card::random();
+                                    }
+                                }
                             });
 
                             $this->redirectNow(Url::fromPath('fourcolors/play')->setParam('game', $game));
