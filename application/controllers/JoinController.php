@@ -3,7 +3,6 @@
 namespace Icinga\Module\Fourcolors\Controllers;
 
 use GuzzleHttp\Psr7\ServerRequest;
-use Icinga\Exception\NotFoundError;
 use Icinga\Module\Fourcolors\Form\ConfirmForm;
 use Icinga\Module\Fourcolors\Game;
 use Icinga\Module\Fourcolors\RedisAwareController;
@@ -26,18 +25,7 @@ class JoinController extends CompatController
                     for ($redis = $this->getRedis();;) {
                         $redis->watch($key);
 
-                        $state = $redis->get($key);
-
-                        if ($state === null) {
-                            throw new NotFoundError($this->translate('No such game: %s'), $game);
-                        }
-
-                        $state = unserialize($state);
-
-                        if (! $state instanceof Game) {
-                            throw new NotFoundError($this->translate('No such game: %s'), $game);
-                        }
-
+                        $state = $this->loadGame($redis, $game);
                         $state->players[$this->Auth()->getUser()->getUsername()] = null;
 
                         $redis->multi();
