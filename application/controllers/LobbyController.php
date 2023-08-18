@@ -6,6 +6,7 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Icinga\Module\Fourcolors\Form\ConfirmForm;
 use Icinga\Module\Fourcolors\Game;
 use Icinga\Module\Fourcolors\RedisAwareController;
+use Icinga\Security\SecurityException;
 use ipl\Html\Html;
 use ipl\Html\ValidHtml;
 use ipl\Web\Compat\CompatController;
@@ -38,7 +39,11 @@ class LobbyController extends CompatController
                 $this->addContent(
                     (new ConfirmForm($this->translate('Start game')))
                         ->on(ConfirmForm::ON_SUCCESS, function () use ($redis, $game): void {
-                            $this->updateGame($redis, $game, function (Game $state): void {
+                            $this->updateGame($redis, $game, function (Game $state) use ($game): void {
+                                if ($state->started) {
+                                    throw new SecurityException($this->translate('Game already started: %s'), $game);
+                                }
+
                                 $state->started = true;
                             });
 
