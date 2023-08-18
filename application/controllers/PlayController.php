@@ -26,6 +26,8 @@ class PlayController extends CompatController
             throw new SecurityException($this->translate('You haven\'t joined game: %s'), $game);
         }
 
+        $this->addContent(Html::tag('p', (string) $state->lastPlayed));
+
         $tbody = Html::tag('tbody');
 
         foreach ($state->players as $player => $cards) {

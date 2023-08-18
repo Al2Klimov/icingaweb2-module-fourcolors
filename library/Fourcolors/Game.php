@@ -8,4 +8,10 @@ class Game
 
     public array $players = [];
     public bool $started = false;
+    public Card $lastPlayed;
+
+    public function __construct()
+    {
+        $this->lastPlayed = Card::random();
+    }
 }
