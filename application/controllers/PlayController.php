@@ -26,6 +26,17 @@ class PlayController extends CompatController
             throw new SecurityException($this->translate('You haven\'t joined game: %s'), $game);
         }
 
-        $this->addContent(Html::tag('p'));
+        $tbody = Html::tag('tbody');
+
+        foreach ($state->players as $player => $cards) {
+            $tbody->addHtml(Html::tag('tr', [], [Html::tag('td', $player), Html::tag('td', count($cards))]));
+        }
+
+        $this->addContent(Html::tag('table', ['class' => 'common-table'], [
+            Html::tag('thead', [], Html::tag('tr', [], [
+                Html::tag('th', $this->translate('Player')), Html::tag('th', $this->translate('Cards'))
+            ])),
+            $tbody
+        ]));
     }
 }

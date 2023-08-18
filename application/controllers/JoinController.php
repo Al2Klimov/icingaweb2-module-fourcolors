@@ -26,7 +26,7 @@ class JoinController extends CompatController
                             throw new SecurityException($this->translate('Game already started: %s'), $game);
                         }
 
-                        $state->players[$this->Auth()->getUser()->getUsername()] = null;
+                        $state->players[$this->Auth()->getUser()->getUsername()] = [];
                     });
 
                     $this->redirectNow(Url::fromPath('fourcolors/lobby')->setParam('game', $game));

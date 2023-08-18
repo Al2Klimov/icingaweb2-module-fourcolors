@@ -19,7 +19,7 @@ class IndexController extends CompatController
             (new ConfirmForm($this->translate('New game')))
                 ->on(ConfirmForm::ON_SUCCESS, function (): void {
                     $state = new Game();
-                    $state->players[$this->Auth()->getUser()->getUsername()] = null;
+                    $state->players[$this->Auth()->getUser()->getUsername()] = [];
                     $state = serialize($state);
 
                     for ($redis = $this->getRedis();;) {
