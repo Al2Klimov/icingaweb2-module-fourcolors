@@ -52,6 +52,14 @@ class LobbyController extends CompatController
                                         $cards[] = Card::random();
                                     }
                                 }
+                                unset($cards);
+
+                                if ($state->lastPlayed->skip) {
+                                    $next = array_key_first($state->players);
+                                    $cards = $state->players[$next];
+                                    unset($state->players[$next]);
+                                    $state->players[$next] = $cards;
+                                }
                             });
 
                             $this->redirectNow(Url::fromPath('fourcolors/play')->setParam('game', $game));
