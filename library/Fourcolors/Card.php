@@ -57,7 +57,7 @@ class Card
 
     public function playableOn(self $card): bool
     {
-        return $this->color === null || $this->color === $card->color
+        return $this->color === null || $card->color === null || $this->color === $card->color
             || $this->number !== null && $this->number === $card->number
             || $this->skip && $card->skip
             || $this->reverse && $card->reverse
