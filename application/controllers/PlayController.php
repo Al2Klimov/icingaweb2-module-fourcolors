@@ -67,6 +67,10 @@ class PlayController extends CompatController
                                 $state->lastPlayed = $state->players[$user][$action];
                                 unset($state->players[$user][$action]);
 
+                                if ($state->lastPlayed->choose) {
+                                    $state->lastPlayed->color = Card::$colors[$form->getValue('color')];
+                                }
+
                                 $cards = $state->players[$user];
                                 unset($state->players[$user]);
                                 $state->players[$user] = $cards;
