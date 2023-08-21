@@ -73,6 +73,11 @@ class PlayController extends CompatController
 
                                 $cards = $state->players[$user];
                                 unset($state->players[$user]);
+
+                                if ($state->lastPlayed->reverse) {
+                                    $state->players = array_reverse($state->players, true);
+                                }
+
                                 $state->players[$user] = $cards;
 
                                 if ($state->lastPlayed->skip) {
