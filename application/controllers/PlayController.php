@@ -74,6 +74,13 @@ class PlayController extends CompatController
                                 $cards = $state->players[$user];
                                 unset($state->players[$user]);
                                 $state->players[$user] = $cards;
+
+                                if ($state->lastPlayed->skip) {
+                                    $next = array_key_first($state->players);
+                                    $cards = $state->players[$next];
+                                    unset($state->players[$next]);
+                                    $state->players[$next] = $cards;
+                                }
                             }
                         });
                     })
