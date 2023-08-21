@@ -60,6 +60,10 @@ class LobbyController extends CompatController
                                     unset($state->players[$next]);
                                     $state->players[$next] = $cards;
                                 }
+
+                                if ($state->lastPlayed->draw > 0) {
+                                    $state->draw = $state->lastPlayed->draw;
+                                }
                             });
 
                             $this->redirectNow(Url::fromPath('fourcolors/play')->setParam('game', $game));
