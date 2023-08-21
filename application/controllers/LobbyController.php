@@ -61,6 +61,10 @@ class LobbyController extends CompatController
                                     $state->players[$next] = $cards;
                                 }
 
+                                if ($state->lastPlayed->reverse) {
+                                    $state->players = array_reverse($state->players, true);
+                                }
+
                                 if ($state->lastPlayed->draw > 0) {
                                     $state->draw = $state->lastPlayed->draw;
                                 }
