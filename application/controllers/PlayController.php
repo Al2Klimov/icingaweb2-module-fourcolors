@@ -72,6 +72,12 @@ class PlayController extends CompatController
                                 $state->lastPlayed = $state->players[$user][$action];
                                 unset($state->players[$user][$action]);
 
+                                if ((count($state->players[$user]) === 1) !== ($form->getValue('uno') === 'y')) {
+                                    for ($i = 0; $i < 4; ++$i) {
+                                        $state->players[$user][] = Card::random();
+                                    }
+                                }
+
                                 if ($state->lastPlayed->choose) {
                                     $state->lastPlayed->color = Card::$colors[$form->getValue('color')];
                                 }

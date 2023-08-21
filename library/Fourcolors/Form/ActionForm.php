@@ -34,6 +34,8 @@ class ActionForm extends CompatForm
             }
         }
 
+        $this->addElement('checkbox', 'uno', ['label' => $this->translate('Say "UNO"')]);
+
         $this->addElement('select', 'action', [
             'label'    => $this->translate('Action'),
             'options'  => $opts,
