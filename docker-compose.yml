@@ -8,6 +8,10 @@ services:
     environment:
       icingaweb.enabledModules: fourcolors
       icingaweb.passwords.icingaweb2.icingaadmin: icinga
+      icingaweb.passwords.icingaweb2.player1: '123456'
+      icingaweb.passwords.icingaweb2.player2: '123456'
+      icingaweb.passwords.icingaweb2.player3: '123456'
+      icingaweb.passwords.icingaweb2.player4: '123456'
       icingaweb.authentication.icingaweb2.backend: db
       icingaweb.authentication.icingaweb2.resource: icingaweb_db
       icingaweb.config.global.config_backend: db
@@ -25,6 +29,8 @@ services:
       icingaweb.resources.icingaweb_db.charset: utf8mb4
       icingaweb.roles.Administrators.users: icingaadmin
       icingaweb.roles.Administrators.permissions: '*'
+      icingaweb.roles.Gamers.users: player1,player2,player3,player4
+      icingaweb.roles.Gamers.permissions: module/fourcolors
     volumes:
       - ./dev-env.d/web:/data
       - ./:/usr/share/icingaweb2/modules/fourcolors:ro
