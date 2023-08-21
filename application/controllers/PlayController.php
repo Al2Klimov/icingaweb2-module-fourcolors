@@ -51,7 +51,12 @@ class PlayController extends CompatController
                             $action = $form->getValue('action');
 
                             if ($action === ActionForm::DRAW) {
-                                $state->players[$user][] = Card::random();
+                                $draw = $state->draw > 0 ? $state->draw : 1;
+                                $state->draw = 0;
+
+                                for ($i = 0; $i < $draw; ++$i) {
+                                    $state->players[$user][] = Card::random();
+                                }
                             } else {
                                 if (! isset($state->players[$user][$action])) {
                                     throw new SecurityException($this->translate('No such card index: %s'), $action);
@@ -85,6 +90,10 @@ class PlayController extends CompatController
                                     $cards = $state->players[$next];
                                     unset($state->players[$next]);
                                     $state->players[$next] = $cards;
+                                }
+
+                                if ($state->lastPlayed->draw > 0) {
+                                    $state->draw += $state->lastPlayed->draw;
                                 }
                             }
                         });

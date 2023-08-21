@@ -21,11 +21,15 @@ class ActionForm extends CompatForm
 
     protected function assemble(): void
     {
-        $opts = [static::DRAW => $this->translate('Draw one')];
+        $opts = [static::DRAW => sprintf($this->translate('Draw %d'), $this->game->draw > 0 ? $this->game->draw : 1)];
         $user = Auth::getInstance()->getUser()->getUsername();
 
         foreach ($this->game->players[$user] as $i => $card) {
             if ($card->playableOn($this->game->lastPlayed)) {
+                if ($this->game->draw > 0 && $card->draw < 1) {
+                    continue;
+                }
+
                 $opts[$i] = (string) $card;
             }
         }

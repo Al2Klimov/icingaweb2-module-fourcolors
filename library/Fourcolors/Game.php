@@ -9,6 +9,7 @@ class Game
     public array $players = [];
     public bool $started = false;
     public Card $lastPlayed;
+    public int $draw = 0;
 
     public function __construct()
     {
