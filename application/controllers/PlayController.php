@@ -32,6 +32,14 @@ class PlayController extends CompatController
             throw new SecurityException($this->translate('You haven\'t joined game: %s'), $game);
         }
 
+        foreach ($state->players as $player => $cards) {
+            if (empty($cards)) {
+                $this->addContent(Html::tag('p', sprintf($this->translate('%s won the game.'), $player)));
+
+                return;
+            }
+        }
+
         if (array_key_first($state->players) === $user) {
             $this->addContent(
                 (new ActionForm())
