@@ -18,12 +18,16 @@ class ActionForm extends CompatForm
     use Translation;
 
     const DRAW = 'draw';
+    const DO_NOTHING = 'nothing';
 
     protected ?Game $game = null;
 
     protected function assemble(): void
     {
-        $opts = [static::DRAW => sprintf($this->translate('Draw %d'), $this->game->draw > 0 ? $this->game->draw : 1)];
+        $opts = $this->game->drawn
+            ? [static::DO_NOTHING => $this->translate('Do nothing')]
+            : [static::DRAW => sprintf($this->translate('Draw %d'), $this->game->draw > 0 ? $this->game->draw : 1)];
+
         $user = Auth::getInstance()->getUser()->getUsername();
 
         foreach ($this->game->players[$user] as $i => $card) {

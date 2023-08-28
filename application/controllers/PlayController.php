@@ -51,58 +51,76 @@ class PlayController extends CompatController
 
                         $this->updateGame($redis, $game, function (Game $state) use ($user, $form): void {
                             $action = $form->getValue('action');
+                            $state->drawn = false;
 
-                            if ($action === ActionForm::DRAW) {
-                                $draw = $state->draw > 0 ? $state->draw : 1;
-                                $state->draw = 0;
+                            switch ($action) {
+                                case ActionForm::DRAW:
+                                    $draw = $state->draw > 0 ? $state->draw : 1;
 
-                                for ($i = 0; $i < $draw; ++$i) {
-                                    $state->players[$user][] = Card::random();
-                                }
-                            } else {
-                                if (! isset($state->players[$user][$action])) {
-                                    throw new SecurityException($this->translate('No such card index: %s'), $action);
-                                }
+                                    if ($state->draw === 0) {
+                                        $state->drawn = true;
+                                    }
 
-                                if (! $state->players[$user][$action]->playableOn($state->lastPlayed)) {
-                                    throw new SecurityException(
-                                        $this->translate('Illegal card: %s'),
-                                        (string) $state->players[$user][$action]
-                                    );
-                                }
+                                    $state->draw = 0;
 
-                                $state->lastPlayed = $state->players[$user][$action];
-                                unset($state->players[$user][$action]);
-
-                                if ((count($state->players[$user]) === 1) !== ($form->getValue('uno') === 'y')) {
-                                    for ($i = 0; $i < 4; ++$i) {
+                                    for ($i = 0; $i < $draw; ++$i) {
                                         $state->players[$user][] = Card::random();
                                     }
-                                }
+                                    break;
 
-                                if ($state->lastPlayed->choose) {
-                                    $state->lastPlayed->color = Card::$colors[$form->getValue('color')];
-                                }
+                                case ActionForm::DO_NOTHING:
+                                    $cards = $state->players[$user];
+                                    unset($state->players[$user]);
+                                    $state->players[$user] = $cards;
+                                    break;
 
-                                $cards = $state->players[$user];
-                                unset($state->players[$user]);
+                                default:
+                                    if (! isset($state->players[$user][$action])) {
+                                        throw new SecurityException(
+                                            $this->translate('No such card index: %s'),
+                                            $action
+                                        );
+                                    }
 
-                                if ($state->lastPlayed->reverse) {
-                                    $state->players = array_reverse($state->players, true);
-                                }
+                                    if (! $state->players[$user][$action]->playableOn($state->lastPlayed)) {
+                                        throw new SecurityException(
+                                            $this->translate('Illegal card: %s'),
+                                            (string) $state->players[$user][$action]
+                                        );
+                                    }
 
-                                $state->players[$user] = $cards;
+                                    $state->lastPlayed = $state->players[$user][$action];
+                                    unset($state->players[$user][$action]);
 
-                                if ($state->lastPlayed->skip) {
-                                    $next = array_key_first($state->players);
-                                    $cards = $state->players[$next];
-                                    unset($state->players[$next]);
-                                    $state->players[$next] = $cards;
-                                }
+                                    if ((count($state->players[$user]) === 1) !== ($form->getValue('uno') === 'y')) {
+                                        for ($i = 0; $i < 4; ++$i) {
+                                            $state->players[$user][] = Card::random();
+                                        }
+                                    }
 
-                                if ($state->lastPlayed->draw > 0) {
-                                    $state->draw += $state->lastPlayed->draw;
-                                }
+                                    if ($state->lastPlayed->choose) {
+                                        $state->lastPlayed->color = Card::$colors[$form->getValue('color')];
+                                    }
+
+                                    $cards = $state->players[$user];
+                                    unset($state->players[$user]);
+
+                                    if ($state->lastPlayed->reverse) {
+                                        $state->players = array_reverse($state->players, true);
+                                    }
+
+                                    $state->players[$user] = $cards;
+
+                                    if ($state->lastPlayed->skip) {
+                                        $next = array_key_first($state->players);
+                                        $cards = $state->players[$next];
+                                        unset($state->players[$next]);
+                                        $state->players[$next] = $cards;
+                                    }
+
+                                    if ($state->lastPlayed->draw > 0) {
+                                        $state->draw += $state->lastPlayed->draw;
+                                    }
                             }
                         });
                     })

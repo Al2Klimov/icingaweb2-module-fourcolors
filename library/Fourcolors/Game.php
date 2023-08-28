@@ -12,6 +12,7 @@ class Game
     public bool $started = false;
     public Card $lastPlayed;
     public int $draw = 0;
+    public bool $drawn = false;
 
     public function __construct()
     {
