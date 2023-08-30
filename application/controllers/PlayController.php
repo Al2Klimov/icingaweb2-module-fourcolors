@@ -147,7 +147,7 @@ class PlayController extends CompatController
             $tbody->addHtml(Html::tag('tr', [], [Html::tag('td', $player), Html::tag('td', count($cards))]));
         }
 
-        $this->addContent(Html::tag('h2', $this->translate('Others')));
+        $this->addContent(Html::tag('h2', $this->translate('All players')));
 
         $this->addContent(Html::tag('table', ['class' => 'common-table'], [
             Html::tag('thead', [], Html::tag('tr', [], [
