@@ -42,6 +42,10 @@ class PlayController extends CompatController
             }
         }
 
+        $this->addContent(
+            Html::tag('p', sprintf($this->translate('It\'s %s\'s turn.'), array_key_first($state->players)))
+        );
+
         if (array_key_first($state->players) === $user) {
             $this->addContent(
                 (new ActionForm())
