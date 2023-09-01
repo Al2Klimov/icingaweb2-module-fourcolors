@@ -160,7 +160,7 @@ class PlayController extends CompatController
         ]));
     }
     public function renderHand(Card $card = null) {
-        $cardColor = '.';
+        $cardColor = '';
         switch ($card->color) {
             case '♠':
                 $cardColor = 'spades';
@@ -186,14 +186,14 @@ class PlayController extends CompatController
         } elseif ($card->draw !== 0) {
             $cardNumber = '+' . $card->draw;
         } elseif ($card->choose) {
-            $cardNumber = '┉';
+            $cardNumber = '​';
         }
 
         return Html::tag(
             'div',
             ['class' => "card-container $cardColor"],
             [
-                Html::tag('p', ['class' => 'card-color ' . $cardColor], $card->color?$card->color:'.'),
+                Html::tag('p', ['class' => 'card-color ' . $cardColor], $card->color?$card->color:'​'),
                 Html::tag('p', ['class' => 'card-number'], $cardNumber),
             ]
         );
