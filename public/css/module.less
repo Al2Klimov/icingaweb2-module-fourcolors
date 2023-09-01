@@ -1,11 +1,6 @@
-@spades: #9336c2;
-@hearts: #c23636;
-@clubs: #59c236;
-@diamonds: #36adc2;
-
-
 .card-container {
-  border: 1px solid;
+  border: 1px solid @text-color;
+  border-radius: 3px;
   width: 3em;
   padding: 0.5em;
   display: inline-block;
@@ -13,6 +8,7 @@
 }
 
 .card-container > * {
+  color: @text-color;
   text-align: center;
   width: 100%;
   margin-bottom: 0;
@@ -32,4 +28,8 @@
 
 .card-container.diamonds {
   background: @color-pending;
+}
+
+.card-container.black {
+  background: linear-gradient(0deg, @menu-bg-color 60%, transparent 60%), linear-gradient(90deg, @color-unknown 25%, transparent 25%), linear-gradient(90deg, @color-critical 50%, transparent 50%), linear-gradient(90deg, @color-ok 75%, transparent 75%), linear-gradient(90deg, @color-pending 100%, transparent 100%);
 }

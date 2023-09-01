@@ -160,7 +160,7 @@ class PlayController extends CompatController
         ]));
     }
     public function renderHand(Card $card = null) {
-        $cardColor = '';
+        $cardColor = 'black';
         switch ($card->color) {
             case '♠':
                 $cardColor = 'spades';
@@ -180,7 +180,7 @@ class PlayController extends CompatController
         if ($card->number !== null) {
             $cardNumber = $card->number;
         } elseif ($card->skip) {
-            $cardNumber = 'ø';
+            $cardNumber = 'Ø';
         } elseif ($card->reverse) {
             $cardNumber = '↔';
         } elseif ($card->draw !== 0) {
