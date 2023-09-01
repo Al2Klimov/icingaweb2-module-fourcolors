@@ -1,0 +1,35 @@
+@spades: #9336c2;
+@hearts: #c23636;
+@clubs: #59c236;
+@diamonds: #36adc2;
+
+
+.card-container {
+  border: 1px solid;
+  width: 3em;
+  padding: 0.5em;
+  display: inline-block;
+  margin-right: 0.25em;
+}
+
+.card-container > * {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.card-container.spades {
+  background: @color-unknown;
+}
+
+.card-container.hearts {
+  background: @color-critical;
+}
+
+.card-container.clubs {
+  background: @color-ok;
+}
+
+.card-container.diamonds {
+  background: @color-pending;
+}

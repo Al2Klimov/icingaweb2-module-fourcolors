@@ -138,13 +138,57 @@ class PlayController extends CompatController
         $this->addContent(Html::tag('p', (string) $state->lastPlayed));
         $this->addContent(Html::tag('h2', $this->translate('My cards')));
 
+        $this->addContent(Html::tag('div', ['class' => 'hand'], array_map(
+            function (Card $card): ValidHtml {
+
+                $cardColor = '.';
+                switch ($card->color) {
+                    case '♠':
+                        $cardColor = 'spades';
+                        break;
+                    case '♥':
+                        $cardColor = 'hearts';
+                        break;
+                    case '♣':
+                        $cardColor = 'clubs';
+                        break;
+                    case '♦':
+                        $cardColor = 'diamonds';
+                        break;
+                }
+
+                $cardNumber = '';
+                if ($card->number !== null) {
+                    $cardNumber = $card->number;
+                } elseif ($card->skip) {
+                    $cardNumber = 'ø';
+                } elseif ($card->reverse) {
+                    $cardNumber = '↔';
+                } elseif ($card->draw !== 0) {
+                    $cardNumber = '+' . $card->draw;
+                } elseif ($card->choose) {
+                    $cardNumber = '┉';
+                }
+
+                return Html::tag(
+                    'div',
+                    ['class' => "card-container $cardColor"],
+                    [
+                        Html::tag('p', ['class' => 'card-color ' . $cardColor], $card->color?$card->color:'.'),
+                        Html::tag('p', ['class' => 'card-number'], $cardNumber),
+                    ]
+                );
+            },
+            $state->players[$user]
+        )));
+/*
         $this->addContent(Html::tag('ul', [], array_map(
             function (Card $card): ValidHtml {
                 return Html::tag('li', (string) $card);
             },
             $state->players[$user]
         )));
-
+*/
         $tbody = Html::tag('tbody');
 
         foreach ($state->players as $player => $cards) {
