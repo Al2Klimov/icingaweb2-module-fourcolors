@@ -185,7 +185,7 @@ class PlayController extends CompatController
             $cardNumber = '↔';
         } elseif ($card->draw !== 0) {
             $cardNumber = '+' . $card->draw;
-        } elseif ($card->choose) {
+        } else {
             // This is a Zero Width Space (ZWSP)
             $cardNumber = htmlspecialchars_decode("\xE2\x80\x8B", ENT_HTML5);
         }
