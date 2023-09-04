@@ -44,6 +44,13 @@ trait RedisAwareController
 
             call_user_func($do, $game);
 
+            foreach ($game->players as &$cards) {
+                usort($cards, function (Card $a, Card $b): int {
+                    return strcmp((string) $a->color, (string) $b->color) ?: (int) $a->number - (int) $b->number;
+                });
+            }
+            unset($cards);
+
             $redis->multi();
             $redis->set($key, serialize($game));
             $redis->expire($key, Game::EXPIRE);
