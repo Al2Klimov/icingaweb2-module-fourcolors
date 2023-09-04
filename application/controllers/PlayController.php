@@ -186,14 +186,19 @@ class PlayController extends CompatController
         } elseif ($card->draw !== 0) {
             $cardNumber = '+' . $card->draw;
         } elseif ($card->choose) {
-            $cardNumber = '​';
+            // This is a Zero Width Space (ZWSP)
+            $cardNumber = htmlspecialchars_decode("\xE2\x80\x8B", ENT_HTML5)
         }
 
         return Html::tag(
             'div',
             ['class' => "card-container $cardColor"],
             [
-                Html::tag('p', ['class' => 'card-color ' . $cardColor], $card->color?$card->color:'​'),
+                Html::tag(
+                    'p',
+                    ['class' => 'card-color ' . $cardColor],
+                    $card->color?$card->color:htmlspecialchars_decode("\xE2\x80\x8B", ENT_HTML5) // This is a Zero Width Space (ZWSP)
+                ),
                 Html::tag('p', ['class' => 'card-number'], $cardNumber),
             ]
         );
