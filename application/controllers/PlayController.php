@@ -10,6 +10,7 @@ use Icinga\Module\Fourcolors\Form\ActionForm;
 use Icinga\Module\Fourcolors\Game;
 use Icinga\Module\Fourcolors\RedisAwareController;
 use Icinga\Security\SecurityException;
+use Icinga\Web\Notification;
 use ipl\Html\Html;
 use ipl\Html\ValidHtml;
 use ipl\Web\Compat\CompatController;
@@ -47,6 +48,8 @@ class PlayController extends CompatController
         );
 
         if (array_key_first($state->players) === $user) {
+            $request = ServerRequest::fromGlobals();
+
             $this->addContent(
                 (new ActionForm())
                     ->setGame($state)
@@ -128,8 +131,12 @@ class PlayController extends CompatController
                             }
                         });
                     })
-                    ->handleRequest(ServerRequest::fromGlobals())
+                    ->handleRequest($request)
             );
+
+            if ($request->getMethod() === 'GET') {
+                Notification::warning($this->translate('It\'s your turn'));
+            }
         } else {
             $this->autorefreshInterval = 1;
         }
