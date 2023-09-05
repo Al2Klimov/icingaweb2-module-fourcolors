@@ -103,6 +103,11 @@ class PlayController extends CompatController
                                         for ($i = 0; $i < 4; ++$i) {
                                             $state->players[$user][] = Card::random();
                                         }
+
+                                        Notification::info($this->translate(
+                                            'Drawing 4. You have to say "UNO" if and only if'
+                                                . ' you\'re playing your second last card'
+                                        ));
                                     }
 
                                     if ($state->lastPlayed->choose) {
