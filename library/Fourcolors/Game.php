@@ -9,6 +9,8 @@ class Game
     const EXPIRE = 3600;
 
     public array $players = [];
+    public array $kicks = [];
+
     public bool $started = false;
     public int $antiCheatToken = 0;
     public Card $lastPlayed;
