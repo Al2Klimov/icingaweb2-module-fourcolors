@@ -124,6 +124,8 @@ class PlayController extends CompatController
                                         $state->draw += $state->lastPlayed->draw;
                                     }
                             }
+
+                            unset($state->kicks[$user]);
                         });
                     })
                     ->handleRequest($request)
