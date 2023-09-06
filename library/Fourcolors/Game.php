@@ -10,6 +10,7 @@ class Game
 
     public array $players = [];
     public bool $started = false;
+    public int $antiCheatToken = 0;
     public Card $lastPlayed;
     public int $draw = 0;
     public bool $drawn = false;
