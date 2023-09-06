@@ -24,11 +24,9 @@ class ActionForm extends CompatForm
 
     protected function assemble(): void
     {
-        $opts = $this->game->drawn
-            ? [static::DO_NOTHING => $this->translate('Do nothing')]
-            : [static::DRAW => sprintf($this->translate('Draw %d'), $this->game->draw > 0 ? $this->game->draw : 1)];
-
+        $opts = ['' => $this->translate('Please choose')];
         $user = Auth::getInstance()->getUser()->getUsername();
+        $canPlay = false;
 
         foreach ($this->game->players[$user] as $i => $card) {
             if ($card->playableOn($this->game->lastPlayed)) {
@@ -37,10 +35,25 @@ class ActionForm extends CompatForm
                 }
 
                 $opts[$i] = (string) $card;
+                $canPlay = true;
             }
         }
 
-        $this->addElement('checkbox', 'uno', ['label' => $this->translate('Say "UNO"')]);
+        if (! $canPlay) {
+            if ($this->game->drawn) {
+                $opts[static::DO_NOTHING] = $this->translate('Do nothing');
+            } else {
+                $opts[static::DRAW] = sprintf(
+                    $this->translate('Draw %d'),
+                    $this->game->draw > 0 ? $this->game->draw : 1
+                );
+            }
+        }
+
+        $this->addElement('checkbox', 'uno', [
+            'label' => $this->translate('Say "UNO"'),
+            'disabled' => ! ($canPlay && count($this->game->players[$user]) === 2)
+        ]);
 
         $this->addElement('select', 'action', [
             'label'    => $this->translate('Action'),
@@ -55,7 +68,7 @@ class ActionForm extends CompatForm
             if ($this->game->players[$user][$action]->choose) {
                 $this->addElement('select', 'color', [
                     'label'    => $this->translate('Color'),
-                    'options'  => Card::$colors,
+                    'options'  => array_merge(['' => $this->translate('Please choose')], Card::$colors),
                     'required' => true
                 ]);
             }
