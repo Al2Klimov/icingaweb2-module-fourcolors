@@ -146,7 +146,15 @@ class PlayController extends CompatController
                                     return;
                                 }
 
-                                $state->kicks[array_key_first($state->players)][$user] = true;
+                                $current = array_key_first($state->players);
+                                $state->kicks[$current][$user] = true;
+
+                                if (count($state->kicks[$current]) + 1 === count($state->players)) {
+                                    unset($state->players[$current]);
+                                    ++$state->antiCheatToken;
+                                } else {
+                                    Notification::info($this->translate('Now the others have to kick them as well'));
+                                }
                             });
                         })
                         ->handleRequest($request)
