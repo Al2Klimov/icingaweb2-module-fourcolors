@@ -24,10 +24,7 @@ class ActionForm extends CompatForm
 
     protected function assemble(): void
     {
-        $opts = $this->game->drawn
-            ? [static::DO_NOTHING => $this->translate('Do nothing')]
-            : [static::DRAW => sprintf($this->translate('Draw %d'), $this->game->draw > 0 ? $this->game->draw : 1)];
-
+        $opts = [];
         $user = Auth::getInstance()->getUser()->getUsername();
 
         foreach ($this->game->players[$user] as $i => $card) {
@@ -38,6 +35,12 @@ class ActionForm extends CompatForm
 
                 $opts[$i] = (string) $card;
             }
+        }
+
+        if (empty($opts)) {
+            $opts = $this->game->drawn
+                ? [static::DO_NOTHING => $this->translate('Do nothing')]
+                : [static::DRAW => sprintf($this->translate('Draw %d'), $this->game->draw > 0 ? $this->game->draw : 1)];
         }
 
         $this->addElement('checkbox', 'uno', ['label' => $this->translate('Say "UNO"')]);
