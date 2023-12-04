@@ -33,7 +33,7 @@ services:
       icingaweb.roles.Gamers.users: player1,player2,player3,player4
       icingaweb.roles.Gamers.permissions: module/fourcolors
     volumes:
-      - ./dev-env.d/web:/data
+      - web:/data
       - ./:/usr/share/icingaweb2/modules/fourcolors:ro
   db:
     image: mariadb
@@ -43,8 +43,13 @@ services:
       MYSQL_USER: web
       MYSQL_PASSWORD: web
     volumes:
-      - ./dev-env.d/db:/var/lib/mysql
+      - db:/var/lib/mysql
   redis:
     image: redis
     volumes:
-      - ./dev-env.d/redis:/data
+      - redis:/data
+
+volumes:
+  web: { }
+  db: { }
+  redis: { }
