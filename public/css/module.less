@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+.card-container {
+  border: 1px solid @text-color;
+  border-radius: 3px;
+  width: 3em;
+  padding: 0.5em;
+  display: inline-block;
+  margin-right: 0.25em;
+}
+
+.card-container > * {
+  color: @text-color;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.card-container.spades {
+  background: @color-unknown;
+}
+
+.card-container.hearts {
+  background: @color-critical;
+}
+
+.card-container.clubs {
+  background: @color-ok;
+}
+
+.card-container.diamonds {
+  background: @color-pending;
+}
+
+.card-container.black {
+  background:
+    linear-gradient(0deg, @menu-bg-color 60%, transparent 60%),
+    linear-gradient(90deg, @color-ok 25%, transparent 25%),
+    linear-gradient(90deg, @color-critical 50%, transparent 50%),
+    linear-gradient(90deg, @color-pending 75%, transparent 75%),
+    linear-gradient(90deg, @color-unknown 100%, transparent 100%);
+}

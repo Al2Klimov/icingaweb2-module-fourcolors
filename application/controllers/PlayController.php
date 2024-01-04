@@ -140,15 +140,14 @@ class PlayController extends CompatController
         }
 
         $this->addContent(Html::tag('h2', $this->translate('Discard pile')));
-        $this->addContent(Html::tag('p', (string) $state->lastPlayed));
+        $this->addContent(Html::tag('p', $this->renderHand($state->lastPlayed)));
         $this->addContent(Html::tag('h2', $this->translate('My cards')));
 
-        $this->addContent(Html::tag('ul', [], array_map(
-            function (Card $card): ValidHtml {
-                return Html::tag('li', (string) $card);
-            },
-            $state->players[$user]
-        )));
+        $hand = [];
+        foreach ($state->players[$user] as $_ => $card) {
+            $hand[] = $this->renderHand($card);
+        }
+        $this->addContent(Html::tag('div', ['class' => 'hand'], $hand));
 
         $tbody = Html::tag('tbody');
 
@@ -164,5 +163,49 @@ class PlayController extends CompatController
             ])),
             $tbody
         ]));
+    }
+    public function renderHand(Card $card = null) {
+        switch ($card->color) {
+            case '♠':
+                $cardColor = 'spades';
+                break;
+            case '♥':
+                $cardColor = 'hearts';
+                break;
+            case '♣':
+                $cardColor = 'clubs';
+                break;
+            case '♦':
+                $cardColor = 'diamonds';
+                break;
+            default:
+                $cardColor = 'black';
+        }
+
+        if ($card->number !== null) {
+            $cardNumber = $card->number;
+        } elseif ($card->skip) {
+            $cardNumber = 'Ø';
+        } elseif ($card->reverse) {
+            $cardNumber = '↔';
+        } elseif ($card->draw !== 0) {
+            $cardNumber = '+' . $card->draw;
+        } else {
+            // This is a Zero Width Space (ZWSP)
+            $cardNumber = htmlspecialchars_decode("\xE2\x80\x8B", ENT_HTML5);
+        }
+
+        return Html::tag(
+            'div',
+            ['class' => "card-container $cardColor"],
+            [
+                Html::tag(
+                    'p',
+                    ['class' => 'card-color ' . $cardColor],
+                    $card->color?$card->color:htmlspecialchars_decode("\xE2\x80\x8B", ENT_HTML5) // This is a Zero Width Space (ZWSP)
+                ),
+                Html::tag('p', ['class' => 'card-number'], $cardNumber),
+            ]
+        );
     }
 }
