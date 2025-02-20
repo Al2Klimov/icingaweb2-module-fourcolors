@@ -7,6 +7,7 @@ namespace Icinga\Module\Fourcolors\Controllers;
 use GuzzleHttp\Psr7\ServerRequest;
 use Icinga\Module\Fourcolors\Card;
 use Icinga\Module\Fourcolors\Form\ActionForm;
+use Icinga\Module\Fourcolors\Form\ConfirmForm;
 use Icinga\Module\Fourcolors\Game;
 use Icinga\Module\Fourcolors\RedisAwareController;
 use Icinga\Security\SecurityException;
@@ -47,8 +48,9 @@ class PlayController extends CompatController
             Html::tag('p', sprintf($this->translate('It\'s %s\'s turn.'), array_key_first($state->players)))
         );
 
+        $request = ServerRequest::fromGlobals();
+
         if (array_key_first($state->players) === $user) {
-            $request = ServerRequest::fromGlobals();
             $act = $state->antiCheatToken;
 
             $this->addContent(
@@ -137,6 +139,23 @@ class PlayController extends CompatController
             }
         } else {
             $this->autorefreshInterval = 1;
+
+            if (count($state->players) > 2) {
+                $this->addContent(
+                    (new ConfirmForm($this->translate('Leave game')))
+                        ->on(ConfirmForm::ON_SUCCESS, function () use ($user, $redis, $game): void {
+                            $this->updateGame($redis, $game, function (Game $state) use ($user): void {
+                                if (count($state->players) < 3) {
+                                    return;
+                                }
+
+                                unset($state->players[$user]);
+                                Notification::info($this->translate('Bye!'));
+                            });
+                        })
+                        ->handleRequest($request)
+                );
+            }
         }
 
         $this->addContent(Html::tag('h2', $this->translate('Discard pile')));
